@@ -62,7 +62,7 @@ int select_cmd()
 }
 
 /*
- *	Función principal
+ *	Función principal main
  */
 int main(){	
 	
@@ -115,8 +115,7 @@ int main(){
 
 
  	// REDIRIGIENDO A FUNCION CORRESPONDIENTE SEGUN EL COMANDO
- 
-    if(strcmp(comando,"INSERT")==0 || strcmp(comando,"insert")==0) {
+     if(strcmp(comando,"INSERT")==0 || strcmp(comando,"insert")==0) {
     	insert_cmd();
     }
     else if(strcmp(comando,"SELECT")==0 || strcmp(comando,"select")==0){
