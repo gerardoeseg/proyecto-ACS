@@ -14,19 +14,17 @@ int insert_cmd(){
 	char nuevoArchivo[14];
 
 	//Variables del archivo 
-	FILE *entrada;
+	FILE *nuevo;
 	char letras;
 
 	//El número de cuenta ingresado pasa como el nombre del nuevo archivo
 	sprintf(nuevoArchivo, "%s.txt", numcta);
 
 	//Se crea el archivo 
-	entrada = fopen(nuevoArchivo, "w"); //FILE * fopen (const char *filename, const char *opentype);
+	nuevo = fopen(nuevoArchivo, "w"); //FILE * fopen (const char *filename, const char *opentype);
 	
-	if (entrada == NULL){
-        printf("\nNo existen datos para el num. de cuenta. \n\n");
-    }
-	fclose(entrada);
+	fputs (entrada, nuevo);
+	fclose(nuevo);
 
 }
 
