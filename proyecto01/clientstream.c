@@ -23,7 +23,6 @@ int main(int argc, char *argv[]){
     // if no command line argument supplied
     if(argc != 2){
         fprintf(stderr, "Client-Usage: %s host_servidor\n", argv[0]);
-
         // just exit
         exit(1);
     }
