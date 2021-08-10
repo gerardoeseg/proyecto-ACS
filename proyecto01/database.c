@@ -10,6 +10,24 @@ char nombres[40];
 
 int insert_cmd(){
 	printf("En construccion :)...\n");
+	//Cadena que recibirá el nombre del archivo
+	char nuevoArchivo[14];
+
+	//Variables del archivo 
+	FILE *entrada;
+	char letras;
+
+	//El número de cuenta ingresado pasa como el nombre del nuevo archivo
+	sprintf(nuevoArchivo, "%s.txt", numcta);
+
+	//Se crea el archivo 
+	entrada = fopen(nuevoArchivo, "w"); //FILE * fopen (const char *filename, const char *opentype);
+	
+	if (entrada == NULL){
+        printf("\nNo existen datos para el num. de cuenta. \n\n");
+    }
+	fclose(entrada);
+
 }
 
 ///////////////////////////////////////////////////////////////
@@ -54,7 +72,7 @@ int main(){
     	}
     }
 
-    //depuracon
+    //depuracion
     for (int j=0; j<i;j++) 
     	printf("Token[%i]: %s\n",j, array[j]); 
     
