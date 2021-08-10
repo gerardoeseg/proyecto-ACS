@@ -3,7 +3,7 @@
 #include <string.h>
 
 char entrada[256];	//Mensaje del cliente 
-char numcta[10]; //primary key
+char numcta[9]; //primary key
 char apPat[20];
 char apMat[20];
 char nombres[40];
@@ -17,7 +17,7 @@ int insert_cmd()
 int select_cmd()
 {
 	char filename[14];
-
+	//Función que pasa el nombre de archivo 
 	sprintf(filename, "%s.txt", numcta); //filename=numcta+.txt
 
 	FILE *archivo;
@@ -25,26 +25,22 @@ int select_cmd()
 	
 	archivo = fopen(filename,"r");
 	
-	if (archivo == NULL)
-        {
-            printf("\nNo existen datos para el num de cuenta. \n\n");
-        }
-        else
-        {
-            printf("\nEl contenido del archivo de prueba es \n\n");
-            while((caracter = fgetc(archivo)) != EOF)
-	    {
-		printf("%c",caracter);
+	if (archivo == NULL){
+        printf("\nNo existen datos para el num. de cuenta. \n\n");
+    }
+    else{
+        printf("\nEl contenido del archivo de prueba es: \n\n");
+        while((caracter = fgetc(archivo)) != EOF){
+			printf("%c",caracter);
 	    }
-        }
-        fclose(archivo);
+    }
+    fclose(archivo);
 }
 ////////////////////////////////////////////////////////////////
-int main()
-{	
+int main(){	
+	
 	char entcpy[256], 	//Copia del mensaje para preservar el original
 	comando[6];			//INSERT o SELECT
-
 	
 	int i=0;
 	char *array[10];
@@ -90,17 +86,14 @@ int main()
 /**REDIRIGIENDO A FUNCION CORRESPONDIENTE**/
     if(strcmp(comando,"INSERT")==0){
     	insert_cmd();
-    	
     }
     else if(strcmp(comando,"SELECT")==0){
     	select_cmd();
-    	
     }
     else{
     	printf("Syntax error\n");
     	main();
     }
 
-	
 	return 0;
 }
