@@ -9,12 +9,11 @@ char apPat[20];
 char apMat[20];
 char nombres[40];
 
-char buffer1[50];
-char buffer2[50];
-char buffer3[MAXDATASIZE];
+char buffer[MAXDATASIZE];
+
 
 int insert_cmd(){
-	printf("En construccion :)...\n");
+	
 	//Cadena que recibirá el nombre del archivo
 	char nuevoArchivo[14];
 
@@ -28,9 +27,11 @@ int insert_cmd(){
 	//Se crea el archivo 
 	nuevo = fopen(nuevoArchivo, "w"); //FILE * fopen (const char *filename, const char *opentype);
 	
-	fputs (buffer3, nuevo);
+	fputs (buffer, nuevo);
 	fclose(nuevo);
 
+	printf("\nRegistro exitoso!\n");
+	fflush(stdin);
 }
 
 ///////////////////////////////////////////////////////////////
@@ -102,13 +103,9 @@ int main(){
 	 	}
 	    printf("nombre(s): %s\n", nombres); //depuracion
 	}
-	//Concatenación
-	strcat(strcpy(buffer1, numcta), apPat);
-	strcat(strcpy(buffer2, buffer1), apMat);
-	strcat(strcpy(buffer3, buffer2), nombres);
-	
-	//strcat(strcpy(buffer, str1), str2);
-    printf("%s\n", buffer3);
+	//Cadena con los datos finales
+	sprintf(buffer, "%s %s %s %s", numcta, apPat, apMat, nombres); 
+    //printf("%s\n", buffer);
 
 /*
  * REDIRIGIENDO A FUNCION CORRESPONDIENTE SEGUN EL COMANDO
