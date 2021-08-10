@@ -4,15 +4,14 @@
 
 char entrada[256];	//Mensaje del cliente 
 char numcta[9]; //primary key
-char apPat[20];
+char apPat[20]; 
 char apMat[20];
 char nombres[40];
 
-int insert_cmd()
-{
+int insert_cmd(){
 	printf("En construccion :)...\n");
-
 }
+
 ///////////////////////////////////////////////////////////////
 int select_cmd()
 {
@@ -60,7 +59,7 @@ int main(){
     	printf("Token[%i]: %s\n",j, array[j]); 
     
     /****ASIGNAR LOS TOKENS A LAS VARIABLES GLOBALES***/
-    strcpy(comando,array[0]);
+    strcpy(comando, array[0]);
     printf("comando: %s\n", comando); //depuracion
 
     strcpy(numcta,array[1]);
@@ -83,17 +82,18 @@ int main(){
 	    printf("nombre(s): %s\n", nombres); //depuracion
  	}
 
-/**REDIRIGIENDO A FUNCION CORRESPONDIENTE**/
+/*
+ * REDIRIGIENDO A FUNCION CORRESPONDIENTE SEGUN EL COMANDO
+ */
     if(strcmp(comando,"INSERT")==0){
     	insert_cmd();
     }
-    else if(strcmp(comando,"SELECT")==0){
+    else if(strcmp(comando,"SELECT")==0 || strcmp(comando,"select")==0){
     	select_cmd();
     }
     else{
     	printf("Syntax error\n");
     	main();
     }
-
 	return 0;
 }
