@@ -8,28 +8,26 @@ char numcta[9]; //primary key
 char apPat[20]; 
 char apMat[20];
 char nombres[40];
-
 char buffer[MAXDATASIZE];
 
-
-int insert_cmd(){
-	
+///////////////////////////////////////////////////////////////
+int insert_cmd()
+{
 	//Cadena que recibirá el nombre del archivo
 	char nuevoArchivo[14];
-
-	//Variables del archivo 
+	//Variable del archivo 
 	FILE *nuevo;
-	char letras;
-
+	
 	//El número de cuenta ingresado pasa como el nombre del nuevo archivo
 	sprintf(nuevoArchivo, "%s.txt", numcta);
-
-	//Se crea el archivo 
+	
+	//Se abre el archivo en modo escritura
 	nuevo = fopen(nuevoArchivo, "w"); //FILE * fopen (const char *filename, const char *opentype);
 	
+	//El contenido de la variable "buffer" se escribe en el archivo
 	fputs (buffer, nuevo);
-	fclose(nuevo);
-
+	
+	fclose(nuevo); //Cierre del archivo
 	printf("\nRegistro exitoso!\n");
 	fflush(stdin);
 }
@@ -40,24 +38,32 @@ int select_cmd()
 	char filename[14];
 	//Función que pasa el nombre de archivo 
 	sprintf(filename, "%s.txt", numcta); //filename=numcta+.txt
-
+	
+	//Variable del archivo 
 	FILE *archivo;
 	char caracter;
 	
+	//Se abre el archivo en modo lectura
 	archivo = fopen(filename,"r");
 	
+	//Si el archivo no se encuentra
 	if (archivo == NULL){
         printf("\nNo existen datos para el num. de cuenta. \n\n");
     }
+	//Si existe, se lee el archivo encontrado
     else{
-        printf("\nEl contenido del archivo de prueba es: \n\n");
+        printf("\nEl contenido del archivo es: \n\n");
+		//Se imprime el contenido del archivo caracter por caracter
         while((caracter = fgetc(archivo)) != EOF){
 			printf("%c",caracter);
 	    }
     }
-    fclose(archivo);
+    fclose(archivo); //Cierre del archivo
 }
-////////////////////////////////////////////////////////////////
+
+/*
+ *	Función principal
+ */
 int main(){	
 	
 	char entcpy[256], 	//Copia del mensaje para preservar el original
@@ -103,13 +109,13 @@ int main(){
 	 	}
 	    printf("nombre(s): %s\n", nombres); //depuracion
 	}
-	//Cadena con los datos finales
-	sprintf(buffer, "%s %s %s %s", numcta, apPat, apMat, nombres); 
-    //printf("%s\n", buffer);
 
-/*
- * REDIRIGIENDO A FUNCION CORRESPONDIENTE SEGUN EL COMANDO
- */
+	//Cadena con los datos finales
+	sprintf(buffer, "%s %s %s", apPat, apMat, nombres); 
+
+
+ 	// REDIRIGIENDO A FUNCION CORRESPONDIENTE SEGUN EL COMANDO
+ 
     if(strcmp(comando,"INSERT")==0 || strcmp(comando,"insert")==0) {
     	insert_cmd();
     }
