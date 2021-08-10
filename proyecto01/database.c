@@ -1,12 +1,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#define MAXDATASIZE 100
 
 char entrada[256];	//Mensaje del cliente 
 char numcta[9]; //primary key
 char apPat[20]; 
 char apMat[20];
 char nombres[40];
+
+char buffer1[50];
+char buffer2[50];
+char buffer3[MAXDATASIZE];
 
 int insert_cmd(){
 	printf("En construccion :)...\n");
@@ -23,7 +28,7 @@ int insert_cmd(){
 	//Se crea el archivo 
 	nuevo = fopen(nuevoArchivo, "w"); //FILE * fopen (const char *filename, const char *opentype);
 	
-	fputs (entrada, nuevo);
+	fputs (buffer3, nuevo);
 	fclose(nuevo);
 
 }
@@ -96,7 +101,14 @@ int main(){
 	 		strcat(nombres,array[j]);
 	 	}
 	    printf("nombre(s): %s\n", nombres); //depuracion
- 	}
+	}
+	//Concatenación
+	strcat(strcpy(buffer1, numcta), apPat);
+	strcat(strcpy(buffer2, buffer1), apMat);
+	strcat(strcpy(buffer3, buffer2), nombres);
+	
+	//strcat(strcpy(buffer, str1), str2);
+    printf("%s\n", buffer3);
 
 /*
  * REDIRIGIENDO A FUNCION CORRESPONDIENTE SEGUN EL COMANDO
