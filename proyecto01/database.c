@@ -28,7 +28,7 @@ int insert_cmd()
 	fputs (buffer, nuevo);
 	
 	fclose(nuevo); //Cierre del archivo
-	printf("\nRegistro exitoso!\n");
+	printf("\nINSERT EXITOSO\n");
 	fflush(stdin);
 }
 
