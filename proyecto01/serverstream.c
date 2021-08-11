@@ -81,7 +81,7 @@ int main(int argc, char *argv[ ]){
     sa.sa_handler = sigchld_handler;
     sigemptyset(&sa.sa_mask);
     sa.sa_flags = SA_RESTART;
-    // sigaction elimina los procesos que puedan quedar zombies
+    // sigaction elimina los procesos que puedan quedar
     if(sigaction(SIGCHLD, &sa, NULL) == -1){
         perror("Server-sigaction() error");
         exit(1);

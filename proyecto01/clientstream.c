@@ -64,7 +64,7 @@ int main(int argc, char *argv[]){
     // si la coneión a traveés del sockfd es exitosa
     else
         //printf("Client-The connect() is OK...\n");
-        printf("Conexion exitosa!...\n");
+        printf("Conexion exitosa\n");
 
     if((numbytes = recv(sockfd, buf, MAXDATASIZE-1, 0)) == -1){
         perror("recv()");
