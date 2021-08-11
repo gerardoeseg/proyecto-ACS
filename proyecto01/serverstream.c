@@ -10,6 +10,8 @@
 #include <sys/wait.h>
 #include <signal.h>
 
+#define MAXDATASIZE 300
+
 /* the port users will be connecting to */
 #define MYPORT 3490
 
@@ -27,6 +29,10 @@ int main(int argc, char *argv[ ]){
      *  new_fd es el file descriptor 2, tiene la información propia del cliente
      */
     int sockfd, new_fd;
+
+    char buf[MAXDATASIZE];
+    int numbytes;
+
 
     /* my address information */
     struct sockaddr_in my_addr;
@@ -117,6 +123,20 @@ int main(int argc, char *argv[ ]){
         else
             // padre entra al else, regresa al while a aceptar la conexión de otro cliente
             printf("Server-send is OK...!\n");
+        
+        /// mensaje recibido
+        if((numbytes = recv(new_fd, buf, MAXDATASIZE-1, 0)) == -1){
+            perror("recv()");
+            exit(1);
+        }
+        else
+            printf("Client-The recv() is OK...\n");
+
+
+        buf[numbytes] = '\0';
+        printf("Server-Received: %s", buf);
+
+        /// fin mensaje recibido
 
         /* parent doesnt need this */
         // el padre no se va a comunicar con el cliente, cierra el new_fd

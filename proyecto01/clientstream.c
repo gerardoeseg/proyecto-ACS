@@ -61,10 +61,17 @@ int main(int argc, char *argv[]){
         perror("connect()");
         exit(1);
     }
-    // si la coneión a traveés del sockfd es exitosa
-    else
+    // si la conexión a través del sockfd es exitosa
+    else{
         //printf("Client-The connect() is OK...\n");
         printf("Conexion exitosa\n");
+       
+       //mensaje enviado
+        if(send(sockfd, "This is a test string from client!\n", 37, 0) == -1)
+                perror("client-send() error lol!");
+        //fin mensaje enviado
+    }
+        
 
     if((numbytes = recv(sockfd, buf, MAXDATASIZE-1, 0)) == -1){
         perror("recv()");
