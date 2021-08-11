@@ -8,7 +8,7 @@
 #include <netinet/in.h>
 #include <sys/socket.h>
 
-// the port client will be connecting to
+// puerto 3490 aleatorio (se pueden elegir desde 1024 en adelante)
 #define PORT 3490
 // max number of bytes we can get at once
 #define MAXDATASIZE 300
@@ -16,6 +16,7 @@
 int main(int argc, char *argv[]){
     int sockfd, numbytes;
     char buf[MAXDATASIZE];
+    // estructura "hostent", apuntador "he"
     struct hostent *he;
 
     // connectors address information
@@ -27,11 +28,15 @@ int main(int argc, char *argv[]){
         exit(1);
     }
 
-    // get the host info
-    if((he=gethostbyname(argv[1])) == NULL){
-        perror("gethostbyname()");
-        exit(1);
+    // si lo que devuelve gethostbyname es NULL, entra al if 
+    if((he=gethostbyname(argv[1])) == NULL){ 
+        // argv[1] es el argumento desde linea de comandos (dominio)
+        // se le asigna el valor de gesthostbyname a la variable "he", apuntador a estructura hostend
+        // asignado el valor, se compara contra NULL, si es igual, entra al if
+        perror("gethostbyname()"); 
+        exit(1); // termina la ejecución con exit(1)
     }
+    // si no es NULL, entra al else
     else
         printf("Client-The remote host is: %s\n", argv[1]);
 
