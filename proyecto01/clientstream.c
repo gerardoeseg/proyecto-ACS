@@ -15,6 +15,9 @@
 
 int main(int argc, char *argv[]){
     int sockfd, numbytes;
+
+    char str[100];
+
     char buf[MAXDATASIZE];
     // estructura "hostent", apuntador "he"
     struct hostent *he;
@@ -56,6 +59,7 @@ int main(int argc, char *argv[]){
 
     // zero the rest of the struct
     memset(&(their_addr.sin_zero), '\0', 8);
+    
     // si la conexión a través del sockfd es fallida
     if(connect(sockfd, (struct sockaddr *)&their_addr, sizeof(struct sockaddr)) == -1){
         perror("connect()");
@@ -64,14 +68,23 @@ int main(int argc, char *argv[]){
     // si la conexión a través del sockfd es exitosa
     else{
         //printf("Client-The connect() is OK...\n");
-        printf("Conexion exitosa\n");
+        printf("Conexion exitosa, escribe tu peticion\n");
        
-       //mensaje enviado
-        if(send(sockfd, "This is a test string from client!\n", 37, 0) == -1)
-                perror("client-send() error lol!");
-        //fin mensaje enviado
-    }
         
+        //if(send(sockfd, "This is a test string from client!\n", 37, 0) == -1)
+        //perror("client-send() error lol!");
+       /** 
+        while(printf("> "), fgets(str, 100, stdin), !feof(stdin)) {
+            if (send(sockfd, str, strlen(str), 0) == -1) {
+                perror("send");
+                //exit(1);
+            }
+        }
+**/
+        printf("> ");
+        fgets(str, 100, stdin);
+        send(sockfd, str, strlen(str), 0);
+    }
 
     if((numbytes = recv(sockfd, buf, MAXDATASIZE-1, 0)) == -1){
         perror("recv()");
