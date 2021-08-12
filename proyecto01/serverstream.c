@@ -54,10 +54,10 @@ int insert_cmd()
 
 int select_cmd()
 {
+	
 	char filename[14];
 	//Función que pasa el nombre de archivo 
 	sprintf(filename, "%s.txt", numcta); //filename=numcta+.txt
-    printf("\nEs es el nombre del archivo: %s\n", filename);
 	
 	//Variable del archivo 
 	FILE *archivo;
@@ -68,7 +68,7 @@ int select_cmd()
 	
 	//Si el archivo no se encuentra
 	if (archivo == NULL){
-        printf("\nNo existen datos para el num. de cuenta %s.\n\n", numcta);
+        printf("\nNo existen datos para el num. de cuenta. \n\n");
     }
 	//Si existe, se lee el archivo encontrado
     else{
@@ -81,18 +81,9 @@ int select_cmd()
     fclose(archivo); //Cierre del archivo
 }
 
-
-
-
-
-
-
 void sigchld_handler(int s){
     while(wait(NULL) > 0);
 }
-
-
-
 
 int main(int argc, char *argv[ ]){
    
