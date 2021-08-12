@@ -8,14 +8,18 @@
 #include <netinet/in.h>
 #include <sys/socket.h>
 
-// the port client will be connecting to
+// puerto 3490 aleatorio (se pueden elegir desde 1024 en adelante)
 #define PORT 3490
 // max number of bytes we can get at once
 #define MAXDATASIZE 300
 
 int main(int argc, char *argv[]){
     int sockfd, numbytes;
+
+    char str[100];
+
     char buf[MAXDATASIZE];
+    // estructura "hostent", apuntador "he"
     struct hostent *he;
 
     // connectors address information
@@ -27,11 +31,15 @@ int main(int argc, char *argv[]){
         exit(1);
     }
 
-    // get the host info
-    if((he=gethostbyname(argv[1])) == NULL){
-        perror("gethostbyname()");
-        exit(1);
+    // si lo que devuelve gethostbyname es NULL, entra al if 
+    if((he=gethostbyname(argv[1])) == NULL){ 
+        // argv[1] es el argumento desde linea de comandos (dominio)
+        // se le asigna el valor de gesthostbyname a la variable "he", apuntador a estructura hostend
+        // asignado el valor, se compara contra NULL, si es igual, entra al if
+        perror("gethostbyname()"); 
+        exit(1); // termina la ejecución con exit(1)
     }
+    // si no es NULL, entra al else
     else
         printf("Client-The remote host is: %s\n", argv[1]);
 
@@ -51,12 +59,32 @@ int main(int argc, char *argv[]){
 
     // zero the rest of the struct
     memset(&(their_addr.sin_zero), '\0', 8);
+    
+    // si la conexión a través del sockfd es fallida
     if(connect(sockfd, (struct sockaddr *)&their_addr, sizeof(struct sockaddr)) == -1){
         perror("connect()");
         exit(1);
     }
-    else
-        printf("Client-The connect() is OK...\n");
+    // si la conexión a través del sockfd es exitosa
+    else{
+        //printf("Client-The connect() is OK...\n");
+        printf("Conexion exitosa, escribe tu peticion\n");
+       
+        
+        //if(send(sockfd, "This is a test string from client!\n", 37, 0) == -1)
+        //perror("client-send() error lol!");
+       /** 
+        while(printf("> "), fgets(str, 100, stdin), !feof(stdin)) {
+            if (send(sockfd, str, strlen(str), 0) == -1) {
+                perror("send");
+                //exit(1);
+            }
+        }
+**/
+        printf("> ");
+        fgets(str, 100, stdin);
+        send(sockfd, str, strlen(str), 0);
+    }
 
     if((numbytes = recv(sockfd, buf, MAXDATASIZE-1, 0)) == -1){
         perror("recv()");
