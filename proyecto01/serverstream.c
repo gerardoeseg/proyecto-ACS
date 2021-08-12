@@ -24,7 +24,7 @@ char apPat[20];
 char apMat[20];
 char nombres[40];
 char comando[6];			//INSERT o SELECT
-int i=0;
+int i;
 char *array[10];
 char buffer[100];
 
@@ -68,7 +68,7 @@ int select_cmd()
 	
 	//Si el archivo no se encuentra
 	if (archivo == NULL){
-        printf("\nNo existen datos para el num. de cuenta. \n\n");
+        printf("\nNo existen datos para el num. de cuenta %s.\n\n", numcta);
     }
 	//Si existe, se lee el archivo encontrado
     else{
@@ -263,10 +263,12 @@ int main(int argc, char *argv[ ]){
         /* parent doesnt need this */
         // el padre no se va a comunicar con el cliente, cierra el new_fd
         close(new_fd);
+
+        i = 0;
+        printf("numero: i=%d", i);
+
         printf("\n\nServer-new socket, new_fd closed successfully...\n");
-        fflush(stdin);
+        fflush(stdin);   
     }
-
-
     return 0;
 }
