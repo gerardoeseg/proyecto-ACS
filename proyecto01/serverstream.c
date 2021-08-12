@@ -26,6 +26,8 @@ char nombres[40];
 char comando[6];			//INSERT o SELECT
 char *array[10];
 char buffer[100];
+char contenido[80];
+char mensajeInsert[16];
 int i;
 
 /*
@@ -48,7 +50,8 @@ int insert_cmd()
 	fputs (buffer, nuevo);
     
 	fclose(nuevo); //Cierre del archivo
-	printf("INSERT EXITOSO\n");
+	sprintf(mensajeInsert, "INSERT EXITOSO\n");
+    printf("%s", mensajeInsert);
 	fflush(stdin);
 }
 
@@ -70,8 +73,9 @@ int select_cmd()
         printf("El contenido del archivo %s es: \n", filename);
 		//Se imprime el contenido del archivo caracter por caracter
         while((caracter = fgetc(archivo)) != EOF){
-			printf("%c",caracter);
+			sprintf(contenido, "%c", caracter);
 	    }
+        printf("Contenido: %s", contenido);
     }
 
     fclose(archivo); //Cierre del archivo
@@ -244,7 +248,7 @@ int main(int argc, char *argv[ ]){
         close(new_fd);
 
         i = 0;
-        printf("numero: i=%d", i);
+        printf("\nnumero: i=%d", i);
 
         printf("\n\nServer-new socket, new_fd closed successfully...\n");
         fflush(stdin);   
