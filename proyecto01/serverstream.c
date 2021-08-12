@@ -24,9 +24,9 @@ char apPat[20];
 char apMat[20];
 char nombres[40];
 char comando[6];			//INSERT o SELECT
-int i;
 char *array[10];
 char buffer[100];
+int i;
 
 /*
  *  Funciones de la base de datos
@@ -46,38 +46,34 @@ int insert_cmd()
 	
 	//El contenido de la variable "buffer" se escribe en el archivo
 	fputs (buffer, nuevo);
-	
+    
 	fclose(nuevo); //Cierre del archivo
-	printf("\nINSERT EXITOSO\n");
+	printf("INSERT EXITOSO\n");
 	fflush(stdin);
 }
 
 int select_cmd()
 {
+    char filename[14];  //SELECT
 	
-	char filename[14];
-	//Función que pasa el nombre de archivo 
-	sprintf(filename, "%s.txt", numcta); //filename=numcta+.txt
-	
-	//Variable del archivo 
-	FILE *archivo;
+	FILE *archivo;  	//Variable del archivo 
 	char caracter;
 	
-	//Se abre el archivo en modo lectura
-	archivo = fopen(filename,"r");
-	
+    sprintf(filename, "%s.txt", numcta); //filename=numcta+.txt
+	archivo = fopen(filename,"r");  //Se abre el archivo en modo lectura
+
 	//Si el archivo no se encuentra
-	if (archivo == NULL){
-        printf("\nNo existen datos para el num. de cuenta. \n\n");
-    }
+	if (archivo == NULL)
+        printf("No existen datos para el num. de cuenta %s\n\n", numcta);
 	//Si existe, se lee el archivo encontrado
     else{
-        printf("\nEl contenido del archivo es: \n\n");
+        printf("El contenido del archivo %s es: \n", filename);
 		//Se imprime el contenido del archivo caracter por caracter
         while((caracter = fgetc(archivo)) != EOF){
 			printf("%c",caracter);
 	    }
     }
+
     fclose(archivo); //Cierre del archivo
 }
 
@@ -87,16 +83,13 @@ void sigchld_handler(int s){
 
 int main(int argc, char *argv[ ]){
    
-
     /*  listen on sock_fd, new connection on new_fd 
      *  sockfd es el file descriptor 1, propio del servidor
      *  new_fd es el file descriptor 2, tiene la información propia del cliente
      */
     int sockfd, new_fd;
-
     char entrada[MAXDATASIZE];
     int numbytes;
-
 
     /* my address information */
     struct sockaddr_in my_addr;
@@ -161,7 +154,6 @@ int main(int argc, char *argv[ ]){
 
      // servidor entra en un ciclo infinito, en él se encuentra un accept()
     while(1){
-
         sin_size = sizeof(struct sockaddr_in);
         // cuando un cliente se conecta, es aceptado por accept() y se inicializa new_fd
         if((new_fd = accept(sockfd, (struct sockaddr *)&their_addr, &sin_size)) == -1){
@@ -173,7 +165,6 @@ int main(int argc, char *argv[ ]){
         
         printf("Server-new socket, new_fd is OK...\n");
         printf("Server: Got connection from %s\n", inet_ntoa(their_addr.sin_addr));
-
         // se conecta el cliente y el servidor crea un hijo con fork(), el hijo entra al if
         if(!fork()){
             // cierra el sockfd, no lo necesita.
@@ -181,7 +172,6 @@ int main(int argc, char *argv[ ]){
             // hijo se comunica con el cliente, envía mensaje (37 bytes) a través del new_fd
             if(send(new_fd, "mensaje del servidor\n", 37, 0) == -1)
                 perror("Server-send() error lol!");
-
             close(new_fd);  // cierra el descriptor de archivo
             exit(0);    // termina
         }
@@ -199,7 +189,6 @@ int main(int argc, char *argv[ ]){
 
         entrada[numbytes] = '\0';
         printf("Server-Received: %s", entrada);
-
         ////////////
 
         char *token = strtok(entrada, " ");
@@ -216,7 +205,7 @@ int main(int argc, char *argv[ ]){
     
         /****ASIGNAR LOS TOKENS A LAS VARIABLES GLOBALES***/
         strcpy(comando, array[0]);
-        printf("\ncomando: %s\n", comando); //depuracion
+        printf("comando: %s\n", comando); //depuracion
 
         strcpy(numcta,array[1]);
         printf("num cuenta: %s\n", numcta); //depuracion
@@ -228,17 +217,16 @@ int main(int argc, char *argv[ ]){
             strcpy(apMat,array[3]);
 	        printf("ap mat: %s\n", apMat); //depuracion
             strcpy(nombres,array[4]);
-	 	    for (int j=5; j<i; j++)
-	 	    {
+	 	    for (int j=5; j<i; j++){
     	 		strcat(nombres, " ");
 	 		    strcat(nombres,array[j]);
 	 	    }
 	        printf("nombre(s): %s\n", nombres); //depuracion
 	    }
-
+ 
         //Cadena con el nombre completo
-	    sprintf(buffer, "%s %s %s", apPat, apMat, nombres); 
-
+	    sprintf(buffer, "%s %s %s", apPat, apMat, nombres);
+   
         // REDIRIGIENDO A FUNCION CORRESPONDIENTE SEGUN EL COMANDO
         if(strcmp(comando,"INSERT")==0) {
     	    insert_cmd();
@@ -248,7 +236,7 @@ int main(int argc, char *argv[ ]){
         }
         else{
     	    printf("Syntax error\n");
-    	    //main();
+    	    exit(1);
         }
 
         /* parent doesnt need this */
