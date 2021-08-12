@@ -26,15 +26,73 @@ char nombres[40];
 char comando[6];			//INSERT o SELECT
 int i=0;
 char *array[10];
-char buffer[MAXDATASIZE];
+char buffer[100];
 
 /*
  *  Funciones de la base de datos
  */
+int insert_cmd()
+{
+	//Cadena que recibirá el nombre del archivo
+	char nuevoArchivo[14];
+	//Variable del archivo 
+	FILE *nuevo;
+	
+	//El número de cuenta ingresado pasa como el nombre del nuevo archivo
+	sprintf(nuevoArchivo, "%s.txt", numcta);
+	
+	//Se abre el archivo en modo escritura
+	nuevo = fopen(nuevoArchivo, "w"); //FILE * fopen (const char *filename, const char *opentype);
+	
+	//El contenido de la variable "buffer" se escribe en el archivo
+	fputs (buffer, nuevo);
+	
+	fclose(nuevo); //Cierre del archivo
+	printf("\nINSERT EXITOSO\n");
+	fflush(stdin);
+}
+
+int select_cmd()
+{
+	char filename[14];
+	//Función que pasa el nombre de archivo 
+	sprintf(filename, "%s.txt", numcta); //filename=numcta+.txt
+    printf("\nEs es el nombre del archivo: %s\n", filename);
+	
+	//Variable del archivo 
+	FILE *archivo;
+	char caracter;
+	
+	//Se abre el archivo en modo lectura
+	archivo = fopen(filename,"r");
+	
+	//Si el archivo no se encuentra
+	if (archivo == NULL){
+        printf("\nNo existen datos para el num. de cuenta. \n\n");
+    }
+	//Si existe, se lee el archivo encontrado
+    else{
+        printf("\nEl contenido del archivo es: \n\n");
+		//Se imprime el contenido del archivo caracter por caracter
+        while((caracter = fgetc(archivo)) != EOF){
+			printf("%c",caracter);
+	    }
+    }
+    fclose(archivo); //Cierre del archivo
+}
+
+
+
+
+
+
 
 void sigchld_handler(int s){
     while(wait(NULL) > 0);
 }
+
+
+
 
 int main(int argc, char *argv[ ]){
    
@@ -150,7 +208,6 @@ int main(int argc, char *argv[ ]){
 
         entrada[numbytes] = '\0';
         printf("Server-Received: %s", entrada);
-        printf("\nCopia de lo recibido: %s\n", entrada);
 
         ////////////
 
@@ -190,16 +247,26 @@ int main(int argc, char *argv[ ]){
 
         //Cadena con el nombre completo
 	    sprintf(buffer, "%s %s %s", apPat, apMat, nombres); 
-        printf("Nombre completo: %s", buffer);
 
-
-
-        /// fin mensaje recibido
+        // REDIRIGIENDO A FUNCION CORRESPONDIENTE SEGUN EL COMANDO
+        if(strcmp(comando,"INSERT")==0) {
+    	    insert_cmd();
+        }
+        else if(strcmp(comando,"SELECT")==0){
+    	    select_cmd();
+        }
+        else{
+    	    printf("Syntax error\n");
+    	    //main();
+        }
 
         /* parent doesnt need this */
         // el padre no se va a comunicar con el cliente, cierra el new_fd
         close(new_fd);
         printf("\n\nServer-new socket, new_fd closed successfully...\n");
+        fflush(stdin);
     }
+
+
     return 0;
 }
