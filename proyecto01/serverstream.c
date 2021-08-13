@@ -36,8 +36,6 @@ int i;
 /*
  *  Funciones de la base de datos
  */
-
-
 int insert_cmd()
 {
 	//El número de cuenta ingresado pasa como el nombre del nuevo archivo
@@ -61,8 +59,6 @@ int select_cmd()
         sprintf(mensajeFinal, "No existen datos para el num. de cuenta %s\n", numcta);
 	//Si existe, se lee el archivo encontrado
     else{
-        //printf("El contenido del archivo %s es: \n", filename);
-		//Se imprime el contenido del archivo caracter por caracter
         while (feof(nuevo) == 0){
             fgets(contenido, 80, nuevo);
         }
@@ -71,13 +67,12 @@ int select_cmd()
     fclose(nuevo); //Cierre del archivo
 }
 
-
 void sigchld_handler(int s){
     while(wait(NULL) > 0);
 }
 
-int main(int argc, char *argv[ ]){
-   
+int main(int argc, char *argv[ ])
+{
     /*  listen on sock_fd, new connection on new_fd 
      *  sockfd es el file descriptor 1, propio del servidor
      *  new_fd es el file descriptor 2, tiene la información propia del cliente
@@ -189,6 +184,7 @@ int main(int argc, char *argv[ ]){
             ////FIN DE PETICION
 
             ////ANALISIS DEL MENSAJE  
+            entrada[strcspn(entrada, "\n")] = 0;  // encuentra un salto de linea \n y lo elimina
             char *token = strtok(entrada, " ");
             if(token != NULL){
         		while(token != NULL){
@@ -201,7 +197,7 @@ int main(int argc, char *argv[ ]){
         	    printf("Token[%i]: %s\n",j, array[j]); 
 
             strcpy(comando, array[0]);
-            printf("comando: %s\n", comando);
+            printf("\ncomando: %s\n", comando);
 
             strcpy(numcta,array[1]);
             printf("num cuenta: %s\n", numcta); 
@@ -220,7 +216,6 @@ int main(int argc, char *argv[ ]){
 	            printf("nombre(s): %s\n", nombres);
 	        } 
 	        sprintf(buffer, "%s %s %s", apPat, apMat, nombres); // cadena con el nombre completo
-            numcta[strcspn(numcta, "\n")] = 0;  // encuentra un salto de linea \n y lo elimina
             sprintf(filename, "%s.txt", numcta);    // cadena con el nombre de archivo
 
             // REDIRIGIENDO A FUNCION CORRESPONDIENTE SEGUN EL COMANDO
@@ -240,11 +235,11 @@ int main(int argc, char *argv[ ]){
             if(send(new_fd, mensajeFinal, 80, 0) == -1)
                 perror("Server-send() error lol!");
             else      
-                printf("Server-send is OK...!\nRESULTADO ENVIADO\n");
+                printf("\nRESULTADO ENVIADO\n");
             ////FIN DEL ENVIO
 
             close(new_fd);  // cierra el descriptor de archivo
-            printf("\n\nServer-new socket, new_fd closed successfully...\n");
+            printf("\nServer-new socket, new_fd closed successfully...\n");
             printf("\nEsperando nueva conexion...\n");
             exit(0);    // termina
 
@@ -252,7 +247,7 @@ int main(int argc, char *argv[ ]){
         /* parent doesnt need this */
         // el padre no se va a comunicar con el cliente, cierra el new_fd
         close(new_fd);
-        printf("\n\nServer-new socket, new_fd closed successfully...\n");
+        printf("\nServer-new socket, new_fd closed successfully...\n");
         fflush(stdin);   
     }
     return 0;

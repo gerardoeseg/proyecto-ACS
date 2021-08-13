@@ -96,10 +96,10 @@ int main(int argc, char *argv[])
             printf("Client-The recv() is OK...\n");
 
         buf[numbytes] = '\0';
-        printf("\nClient-Received: %s\n", buf);
+        printf("\nClient-Received:\n%s\n", buf);
         ////FIN DEL MENSAJE
     }
-    printf("Client-Closing sockfd\nDESCONECTADO DEL SERVIDOR!\n");
+    printf("\nClient-Closing sockfd\nDESCONECTADO DEL SERVIDOR!\n");
     close(sockfd);
     return 0;
 }
