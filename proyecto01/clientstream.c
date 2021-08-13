@@ -70,17 +70,6 @@ int main(int argc, char *argv[]){
         //printf("Client-The connect() is OK...\n");
         printf("Conexion exitosa, escribe tu peticion\n");
        
-        
-        //if(send(sockfd, "This is a test string from client!\n", 37, 0) == -1)
-        //perror("client-send() error lol!");
-       /** 
-        while(printf("> "), fgets(str, 100, stdin), !feof(stdin)) {
-            if (send(sockfd, str, strlen(str), 0) == -1) {
-                perror("send");
-                //exit(1);
-            }
-        }
-**/
         printf("> ");
         fgets(str, 100, stdin);
         send(sockfd, str, strlen(str), 0);

@@ -77,7 +77,6 @@ int select_cmd()
 	    }
         printf("Contenido: %s", contenido);
     }
-
     fclose(archivo); //Cierre del archivo
 }
 
