@@ -23,8 +23,8 @@ char numcta[9]; //primary key
 char apPat[20]; 
 char apMat[20];
 char nombres[40];
-char comando[6];			//INSERT o SELECT
 char *array[10];
+char comando[6];			//INSERT o SELECT
 char buffer[100];
 char contenido[80];
 char mensajeInsert[16];
@@ -33,6 +33,8 @@ int i;
 /*
  *  Funciones de la base de datos
  */
+
+
 int insert_cmd()
 {
 	//Cadena que recibirá el nombre del archivo
@@ -52,33 +54,35 @@ int insert_cmd()
 	fclose(nuevo); //Cierre del archivo
 	sprintf(mensajeInsert, "INSERT EXITOSO\n");
     printf("%s", mensajeInsert);
-	fflush(stdin);
+	//fflush(stdin);
 }
 
 int select_cmd()
 {
-    char filename[14];  //SELECT
+    char filename[20];  //SELECT
 	
 	FILE *archivo;  	//Variable del archivo 
 	char caracter;
 	
-    sprintf(filename, "%s.txt", numcta); //filename=numcta+.txt
+    //sprintf(filename, "%s.txt", numcta); //filename=numcta+.txt
+    strcpy(filename, "312227960.txt");
 	archivo = fopen(filename,"r");  //Se abre el archivo en modo lectura
 
 	//Si el archivo no se encuentra
 	if (archivo == NULL)
-        printf("No existen datos para el num. de cuenta %s\n\n", numcta);
+        printf("archivo: %s, no existen datos para el num. de cuenta %s\n\n", filename, numcta);
 	//Si existe, se lee el archivo encontrado
     else{
         printf("El contenido del archivo %s es: \n", filename);
 		//Se imprime el contenido del archivo caracter por caracter
         while((caracter = fgetc(archivo)) != EOF){
-			sprintf(contenido, "%c", caracter);
+			printf("%c", caracter);
 	    }
         printf("Contenido: %s", contenido);
     }
     fclose(archivo); //Cierre del archivo
 }
+
 
 void sigchld_handler(int s){
     while(wait(NULL) > 0);
@@ -168,86 +172,100 @@ int main(int argc, char *argv[ ]){
         
         printf("Server-new socket, new_fd is OK...\n");
         printf("Server: Got connection from %s\n", inet_ntoa(their_addr.sin_addr));
+        
         // se conecta el cliente y el servidor crea un hijo con fork(), el hijo entra al if
-        if(!fork()){
+        if(!fork())
+        {
             // cierra el sockfd, no lo necesita.
             close(sockfd);
             // hijo se comunica con el cliente, envía mensaje (37 bytes) a través del new_fd
-            if(send(new_fd, "mensaje del servidor\n", 37, 0) == -1)
+            if(send(new_fd, "Conectado al servidor exitosamente\n", 37, 0) == -1)
                 perror("Server-send() error lol!");
+               // padre entra al else, regresa al while a aceptar la conexión de otro cliente
+            else      
+                printf("Server-send is OK...!\n");
+                
+            printf("Conectado con el cliente exitosamente\n");
+
+            ////PETICION DEL CLIENTE
+            printf("\nEsperando el mensaje del cliente:\n");
+            if((numbytes = recv(new_fd, entrada, MAXDATASIZE-1, 0)) == -1){
+                perror("recv()");
+                exit(1);
+            }
+            else{
+                printf("Client-The recv() is OK...\n");
+                entrada[numbytes] = '\0';
+                printf("Server-Received: %s", entrada);
+            }
+            ////FIN DE PETICION
+
+            ////ANALISIS DEL MENSAJE  
+            char *token = strtok(entrada, " ");
+            if(token != NULL){
+        		while(token != NULL){
+			        array[i++]=token; //Guardando cada token en un arreglo
+	                token = strtok(NULL, " ");
+    	        }
+            }
+
+            for (int j=0; j<i;j++) 
+        	    printf("Token[%i]: %s\n",j, array[j]); 
+
+            strcpy(comando, array[0]);
+            printf("comando: %s\n", comando);
+
+            strcpy(numcta,array[1]);
+            printf("num cuenta: %s\n", numcta); 
+
+            if((i>2)&&(i<9)) //Para evitar segmentation fault
+            {
+	            strcpy(apPat,array[2]);
+	            printf("ap pat: %s\n", apPat); 
+                strcpy(apMat,array[3]);
+	            printf("ap mat: %s\n", apMat); 
+                strcpy(nombres,array[4]);
+	 	        for (int j=5; j<i; j++){
+    	 		    strcat(nombres, " ");
+	 		        strcat(nombres,array[j]);
+	 	        }
+	            printf("nombre(s): %s\n", nombres);
+	        } 
+            //Cadena con el nombre completo
+	        sprintf(buffer, "%s %s %s", apPat, apMat, nombres);
+
+
+            // REDIRIGIENDO A FUNCION CORRESPONDIENTE SEGUN EL COMANDO
+            if(strcmp(comando,"INSERT")==0) {
+        	    insert_cmd();
+                //printf("%s", buffer);
+            }
+            else if(strcmp(comando,"SELECT")==0){
+        	    select_cmd();
+                //printf("%s", buffer);
+            }
+            else{
+        	    printf("Syntax error\n");
+    	        exit(1);
+            }
+            ////FIN DEL ANALISIS          
+            
             close(new_fd);  // cierra el descriptor de archivo
+            printf("\n\nServer-new socket, new_fd closed successfully...\n");
             exit(0);    // termina
-        }
-        // padre entra al else, regresa al while a aceptar la conexión de otro cliente
-        else      
-            printf("Server-send is OK...!\n");
-        
-        /// mensaje recibido
-        if((numbytes = recv(new_fd, entrada, MAXDATASIZE-1, 0)) == -1){
-            perror("recv()");
-            exit(1);
-        }
-        else
-            printf("Client-The recv() is OK...\n");
 
-        entrada[numbytes] = '\0';
-        printf("Server-Received: %s", entrada);
-        ////////////
 
-        char *token = strtok(entrada, " ");
-	    if(token != NULL){
-    		while(token != NULL){
-			    array[i++]=token; //Guardando cada token en un arreglo
-	            token = strtok(NULL, " ");
-    	    }
+
+
         }
-
-        //depuracion
-        for (int j=0; j<i;j++) 
-        	printf("Token[%i]: %s\n",j, array[j]); 
-    
-        /****ASIGNAR LOS TOKENS A LAS VARIABLES GLOBALES***/
-        strcpy(comando, array[0]);
-        printf("comando: %s\n", comando); //depuracion
-
-        strcpy(numcta,array[1]);
-        printf("num cuenta: %s\n", numcta); //depuracion
-
-        if((i>2)&&(i<9)) //Para evitar segmentation fault
-        {
-	        strcpy(apPat,array[2]);
-	        printf("ap pat: %s\n", apPat); //depuracion
-            strcpy(apMat,array[3]);
-	        printf("ap mat: %s\n", apMat); //depuracion
-            strcpy(nombres,array[4]);
-	 	    for (int j=5; j<i; j++){
-    	 		strcat(nombres, " ");
-	 		    strcat(nombres,array[j]);
-	 	    }
-	        printf("nombre(s): %s\n", nombres); //depuracion
-	    }
- 
-        //Cadena con el nombre completo
-	    sprintf(buffer, "%s %s %s", apPat, apMat, nombres);
-   
-        // REDIRIGIENDO A FUNCION CORRESPONDIENTE SEGUN EL COMANDO
-        if(strcmp(comando,"INSERT")==0) {
-    	    insert_cmd();
-        }
-        else if(strcmp(comando,"SELECT")==0){
-    	    select_cmd();
-        }
-        else{
-    	    printf("Syntax error\n");
-    	    exit(1);
-        }
-
+     	   
         /* parent doesnt need this */
         // el padre no se va a comunicar con el cliente, cierra el new_fd
+       
         close(new_fd);
 
-        i = 0;
-        printf("\nnumero: i=%d", i);
+        //i = 0;
+        //printf("\nnumero: i=%d", i);
 
         printf("\n\nServer-new socket, new_fd closed successfully...\n");
         fflush(stdin);   

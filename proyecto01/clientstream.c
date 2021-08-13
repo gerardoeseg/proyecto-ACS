@@ -13,14 +13,12 @@
 // max number of bytes we can get at once
 #define MAXDATASIZE 300
 
-int main(int argc, char *argv[]){
+int main(int argc, char *argv[])
+{
     int sockfd, numbytes;
-
     char str[100];
-
     char buf[MAXDATASIZE];
-    // estructura "hostent", apuntador "he"
-    struct hostent *he;
+    struct hostent *he;     // estructura "hostent", apuntador "he"
 
     // connectors address information
     struct sockaddr_in their_addr;
@@ -60,6 +58,7 @@ int main(int argc, char *argv[]){
     // zero the rest of the struct
     memset(&(their_addr.sin_zero), '\0', 8);
     
+
     // si la conexión a través del sockfd es fallida
     if(connect(sockfd, (struct sockaddr *)&their_addr, sizeof(struct sockaddr)) == -1){
         perror("connect()");
@@ -67,23 +66,33 @@ int main(int argc, char *argv[]){
     }
     // si la conexión a través del sockfd es exitosa
     else{
-        //printf("Client-The connect() is OK...\n");
-        printf("Conexion exitosa, escribe tu peticion\n");
-       
+        
+        printf("Client-The connect() is OK...\n");
+
+        ////SALUDO SERVER
+        if((numbytes = recv(sockfd, buf, MAXDATASIZE-1, 0)) == -1){
+            perror("recv()");
+            exit(1);
+        }
+        else
+            printf("Client-The recv() is OK...\n");
+
+        buf[numbytes] = '\0';
+        printf("Client-Received: %s\n", buf);
+        ////FIN SALUDO
+
+        ////ENVIO DE PETICION
         printf("> ");
         fgets(str, 100, stdin);
         send(sockfd, str, strlen(str), 0);
-    }
+        ////FIN DEL ENVIO DE PETICION
 
-    if((numbytes = recv(sockfd, buf, MAXDATASIZE-1, 0)) == -1){
-        perror("recv()");
-        exit(1);
-    }
-    else
-        printf("Client-The recv() is OK...\n");
 
-    buf[numbytes] = '\0';
-    printf("Client-Received: %s", buf);
+
+
+
+
+    }
     printf("Client-Closing sockfd\n");
     close(sockfd);
     return 0;
