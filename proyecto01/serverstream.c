@@ -19,7 +19,7 @@
 /*
  *  Variables de la base de datos
  */
-char numcta[9]; //primary key
+char numcta[8]; //primary key
 char apPat[20]; 
 char apMat[20];
 char nombres[40];
@@ -27,7 +27,10 @@ char *array[10];
 char comando[6];			//INSERT o SELECT
 char buffer[100];
 char contenido[80];
-char mensajeInsert[16];
+char mensajeFinal[MAXDATASIZE];
+char nuevoArchivo[14];      //Cadena que recibirá el nombre del archivo
+char filename[13];  //SELECT
+FILE *nuevo;
 int i;
 
 /*
@@ -37,50 +40,35 @@ int i;
 
 int insert_cmd()
 {
-	//Cadena que recibirá el nombre del archivo
-	char nuevoArchivo[14];
-	//Variable del archivo 
-	FILE *nuevo;
-	
 	//El número de cuenta ingresado pasa como el nombre del nuevo archivo
-	sprintf(nuevoArchivo, "%s.txt", numcta);
-	
 	//Se abre el archivo en modo escritura
-	nuevo = fopen(nuevoArchivo, "w"); //FILE * fopen (const char *filename, const char *opentype);
+	nuevo = fopen(filename, "w"); //FILE * fopen (const char *filename, const char *opentype);
 	
 	//El contenido de la variable "buffer" se escribe en el archivo
 	fputs (buffer, nuevo);
     
 	fclose(nuevo); //Cierre del archivo
-	sprintf(mensajeInsert, "INSERT EXITOSO\n");
-    printf("%s", mensajeInsert);
-	//fflush(stdin);
+	sprintf(mensajeFinal, "INSERT EXITOSO, el archivo %s fue creado\n", filename);
+    //printf("%s", mensajeInsert);
 }
 
 int select_cmd()
 {
-    char filename[20];  //SELECT
-	
-	FILE *archivo;  	//Variable del archivo 
-	char caracter;
-	
-    //sprintf(filename, "%s.txt", numcta); //filename=numcta+.txt
-    strcpy(filename, "312227960.txt");
-	archivo = fopen(filename,"r");  //Se abre el archivo en modo lectura
+	nuevo = fopen(filename,"r");  //Se abre el archivo en modo lectura
 
 	//Si el archivo no se encuentra
-	if (archivo == NULL)
-        printf("archivo: %s, no existen datos para el num. de cuenta %s\n\n", filename, numcta);
+	if (nuevo == NULL)
+        sprintf(mensajeFinal, "No existen datos para el num. de cuenta %s\n", numcta);
 	//Si existe, se lee el archivo encontrado
     else{
-        printf("El contenido del archivo %s es: \n", filename);
+        //printf("El contenido del archivo %s es: \n", filename);
 		//Se imprime el contenido del archivo caracter por caracter
-        while((caracter = fgetc(archivo)) != EOF){
-			printf("%c", caracter);
-	    }
-        printf("Contenido: %s", contenido);
+        while (feof(nuevo) == 0){
+            fgets(contenido, 80, nuevo);
+        }
+        sprintf(mensajeFinal, "El contenido del archivo %s es:\n %s", filename, contenido);
     }
-    fclose(archivo); //Cierre del archivo
+    fclose(nuevo); //Cierre del archivo
 }
 
 
@@ -196,7 +184,7 @@ int main(int argc, char *argv[ ]){
             else{
                 printf("Client-The recv() is OK...\n");
                 entrada[numbytes] = '\0';
-                printf("Server-Received: %s", entrada);
+                printf("Server-Received: %s\n", entrada);
             }
             ////FIN DE PETICION
 
@@ -231,18 +219,16 @@ int main(int argc, char *argv[ ]){
 	 	        }
 	            printf("nombre(s): %s\n", nombres);
 	        } 
-            //Cadena con el nombre completo
-	        sprintf(buffer, "%s %s %s", apPat, apMat, nombres);
-
+	        sprintf(buffer, "%s %s %s", apPat, apMat, nombres); // cadena con el nombre completo
+            numcta[strcspn(numcta, "\n")] = 0;  // encuentra un salto de linea \n y lo elimina
+            sprintf(filename, "%s.txt", numcta);    // cadena con el nombre de archivo
 
             // REDIRIGIENDO A FUNCION CORRESPONDIENTE SEGUN EL COMANDO
             if(strcmp(comando,"INSERT")==0) {
         	    insert_cmd();
-                //printf("%s", buffer);
             }
             else if(strcmp(comando,"SELECT")==0){
         	    select_cmd();
-                //printf("%s", buffer);
             }
             else{
         	    printf("Syntax error\n");
@@ -250,23 +236,22 @@ int main(int argc, char *argv[ ]){
             }
             ////FIN DEL ANALISIS          
             
+            ////ENVIO DE RESULTADO
+            if(send(new_fd, mensajeFinal, 80, 0) == -1)
+                perror("Server-send() error lol!");
+            else      
+                printf("Server-send is OK...!\nRESULTADO ENVIADO\n");
+            ////FIN DEL ENVIO
+
             close(new_fd);  // cierra el descriptor de archivo
             printf("\n\nServer-new socket, new_fd closed successfully...\n");
+            printf("\nEsperando nueva conexion...\n");
             exit(0);    // termina
 
-
-
-
         }
-     	   
         /* parent doesnt need this */
         // el padre no se va a comunicar con el cliente, cierra el new_fd
-       
         close(new_fd);
-
-        //i = 0;
-        //printf("\nnumero: i=%d", i);
-
         printf("\n\nServer-new socket, new_fd closed successfully...\n");
         fflush(stdin);   
     }

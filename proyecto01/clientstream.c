@@ -87,13 +87,19 @@ int main(int argc, char *argv[])
         send(sockfd, str, strlen(str), 0);
         ////FIN DEL ENVIO DE PETICION
 
+        ////MENSAJE RESULTADO
+        if((numbytes = recv(sockfd, buf, MAXDATASIZE-1, 0)) == -1){
+            perror("recv()");
+            exit(1);
+        }
+        else
+            printf("Client-The recv() is OK...\n");
 
-
-
-
-
+        buf[numbytes] = '\0';
+        printf("\nClient-Received: %s\n", buf);
+        ////FIN DEL MENSAJE
     }
-    printf("Client-Closing sockfd\n");
+    printf("Client-Closing sockfd\nDESCONECTADO DEL SERVIDOR!\n");
     close(sockfd);
     return 0;
 }
