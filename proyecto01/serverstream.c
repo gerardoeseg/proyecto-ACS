@@ -62,7 +62,7 @@ int select_cmd()
         while (feof(nuevo) == 0){
             fgets(contenido, 80, nuevo);
         }
-        sprintf(mensajeFinal, "El contenido del archivo %s es:\n %s", filename, contenido);
+        sprintf(mensajeFinal, "El contenido del archivo %s es:\n%s", filename, contenido);
     }
     fclose(nuevo); //Cierre del archivo
 }
