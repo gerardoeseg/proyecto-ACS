@@ -16,9 +16,9 @@
 - Valeriano Barrios Cristian
 ----------- 
 ## Contenido
-Basados en los códigos clientstream.c y serverstream.c
+Basados en los códigos [clientstream.c](code/other%20code/clientstream.c) y [serverstream.c](code/other%20code/serverstream.c)
 
-Para el proyecto final se realizaron ciertas modificaciones.
+Para el **proyecto final** se realizaron ciertas modificaciones.
 
 Como están los códigos originales, el servidor es el que envía el mensaje de texto al cliente. Ahora se modificaron para que sea el cliente el que eníe el mensaje inicial, pero no debe ser el mensaje actual que está fijo dentro del código. Deben capturar del teclado el mensaje que el cliente debe enviar al servidor.
 
