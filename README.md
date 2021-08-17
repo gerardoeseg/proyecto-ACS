@@ -16,7 +16,7 @@
 - Valeriano Barrios Cristian
 ----------- 
 ## Contenido
-Basados en los códigos [clientstream.c](code/other%20code/clientstream.c) y [serverstream.c](code/other%20code/serverstream.c)
+Basados en los códigos [clientstream.c](code/other%20code/codigo03_clientstream.c) y [serverstream.c](code/other%20code/codigo03_serverstream.c)
 
 Para el **proyecto final** se realizaron ciertas modificaciones.
 
