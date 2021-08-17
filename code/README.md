@@ -10,4 +10,4 @@
 
 3. Carpeta [other code](other%20code)
    
-   Ahí se encuentra el código que sirvio de base para el proyecto final.
+   Ahí se encuentra el código que sirvió de base para el proyecto final.
